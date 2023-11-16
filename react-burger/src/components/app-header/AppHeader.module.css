@@ -1,0 +1,31 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    max-width: 1920px;
+    height: 88px;
+    margin: auto;
+    background-color: #1C1C21;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.burgerNav {
+    align-self: stretch;
+    display: flex;
+    column-gap: 8px;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+    column-gap: 8px;
+
+    color: #8585AD;
+}
+
+.navItemActive {
+    composes: navItem;
+    color: #F2F2F3;
+}
