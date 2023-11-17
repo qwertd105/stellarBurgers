@@ -1,0 +1,21 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 272px;
+}
+
+.currencyContainer {
+    height: 24px;
+    display: flex;
+    flex-direction: row;
+}
+
+.image {
+    height: 120px;
+    width: 240px;
+}
+
+.title {
+    height: 48px;
+}

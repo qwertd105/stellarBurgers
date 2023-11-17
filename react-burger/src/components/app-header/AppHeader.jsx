@@ -37,7 +37,7 @@ function AppHeader() {
             <Logo />
             <div onClick={onProfile} className={(activeNav == 'profile' ? headerStyles.navItemActive : headerStyles.navItem) + ' pl-5'}>
                     <ProfileIcon type={(activeNav == 'profile' ? 'primary' : 'secondary')} />
-                    Конструктор
+                    Личный кабинет
             </div>
         </header>
     );
