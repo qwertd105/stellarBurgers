@@ -1,0 +1,14 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 4px;
+}
+
+.ingredientsContainer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    max-height: 656px;
+    overflow-y: scroll;
+}

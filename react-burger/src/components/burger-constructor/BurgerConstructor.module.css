@@ -2,5 +2,19 @@
     width: 600px;
     display: flex;
     flex-direction: column;
-    border: 2px solid red;
+    row-gap: 40px;
+}
+
+.ingredientsContainer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    max-height: 556px;
+    overflow-y: scroll;
+}
+
+.done {
+    display: flex;
+    justify-content: end;
+    align-items: center;
 }

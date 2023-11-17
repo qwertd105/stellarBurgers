@@ -10,7 +10,9 @@ export function IngredientsList({ ingredients, text }) {
             </p>
             <div className={listStyles.cardContainer}>
             {ingredients.map((ingredient) => (
-            <IngredientCard ingredient={ingredient} />
+                <div key={ingredient._id}>
+                    <IngredientCard ingredient={ingredient} />
+                </div>
         )
             )}
             </div>
