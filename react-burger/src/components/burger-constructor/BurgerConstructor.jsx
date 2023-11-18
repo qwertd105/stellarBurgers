@@ -1,10 +1,16 @@
 import { Button, ConstructorElement, CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components"
 import React from "react";
+import OrderDetails from "../order-details/OrderDetails";
 import styles from "./BurgerConstructor.module.css"
 import MiddleIngredient from "./middle-ingredient/MiddleIngredient"
 import OrderButton from "./order-button/OrderButton";
+import PropTypes from "prop-types";
 
-function BurgerConstructor({ ingredients }) {
+BurgerConstructor.propTypes = {
+    ingredients: PropTypes.array.isRequired,
+    onModalOpen: PropTypes.func.isRequired
+}
+function BurgerConstructor({ ingredients, onModalOpen }) {
 
     const bun = ingredients[0];
     const [price, setPrice] = React.useState(bun.price * 2);
@@ -14,6 +20,11 @@ function BurgerConstructor({ ingredients }) {
             setPrice(price + ingredient.price);
         })
     }, [ingredients])
+
+    function onOrderClick() {
+        const node = <OrderDetails />
+        onModalOpen(node);
+    }
 
     return (
         <section className={styles.main + " pt-25"}>
@@ -46,7 +57,7 @@ function BurgerConstructor({ ingredients }) {
             <div className={styles.done}>
                     <p className="text text_type_digits-medium">{price}</p>
                     <CurrencyIcon type="primary" />
-                    <OrderButton />
+                    <OrderButton onClick={onOrderClick} />
             </div>
         </section>
     )

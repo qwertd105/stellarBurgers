@@ -1,10 +1,16 @@
 import React from 'react'
 import styles from './BurgerIngredients.module.css'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
-import {IngredientCard} from './ingredients-list/ingredient-card/IngredientCard'
 import {IngredientsList} from './ingredients-list/IngredientsList'
+import PropTypes from "prop-types";
 
-function BurgerIngredients({ingredients}) {
+BurgerIngredients.propTypes = {
+    ingredients: PropTypes.array.isRequired,
+    onModalOpen: PropTypes.func.isRequired
+}
+
+
+function BurgerIngredients({ingredients, onModalOpen}) {
 
     const [current, setCurrent] = React.useState('bun')
     const bunArray = ingredients.filter((item) => item.type === 'bun');
@@ -32,9 +38,9 @@ function BurgerIngredients({ingredients}) {
                     </Tab>
               </div>
               <div className={styles.sectionContainer}>
-                <IngredientsList text="Булки" ingredients={bunArray} />
-                <IngredientsList text="Соусы" ingredients={sauceArray} />
-                <IngredientsList text="Начинки"ingredients={mainArray} />
+                <IngredientsList text="Булки" ingredients={bunArray} onModalOpen={onModalOpen}/>
+                <IngredientsList text="Соусы" ingredients={sauceArray} onModalOpen={onModalOpen} />
+                <IngredientsList text="Начинки"ingredients={mainArray} onModalOpen={onModalOpen} />
               </div>
 
         </div>
