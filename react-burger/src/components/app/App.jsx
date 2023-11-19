@@ -42,9 +42,7 @@ function App() {
         setIngredients(data.data)
         setIsLoaded(true)
         })
-      .catch((err) => {
-        setError(err)
-      })
+      .catch(setError)
   };
 
   React.useEffect(() => {

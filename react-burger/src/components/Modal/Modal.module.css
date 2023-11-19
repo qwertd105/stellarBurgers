@@ -22,8 +22,7 @@
 .buttonClose {
     position: absolute;
     right: 40px;
-    top: 60px;
-    background-image: url('../../../src/images/closebtn.png');
+    top: 40px;
     width: 18px;
     height: 18px;
     border: none;
