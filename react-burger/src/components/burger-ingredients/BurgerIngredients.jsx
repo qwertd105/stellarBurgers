@@ -13,7 +13,7 @@ BurgerIngredients.propTypes = {
 }
 
 function BurgerIngredients() {
-
+    const scrollRef = React.useRef(window);
     const [current, setCurrent] = React.useState('bun')
     
     const dispatch = useDispatch();
@@ -26,6 +26,34 @@ function BurgerIngredients() {
     )
 
     const ingredientDetails = useSelector((store) => store.ingredientDetails)
+
+    const onScroll = () => {
+      if (scrollRef.current.scrollTop < 200) {
+        setCurrent("bun")
+      } else if (scrollRef.current.scrollTop >= 200 && scrollRef.current.scrollTop < 775) {
+        setCurrent("sauce")
+      } else {
+        setCurrent("main")
+      }
+      console.log(scrollRef.current.scrollTop)
+    } 
+
+    function onBunClick() {
+      scrollRef.current.scrollTop = 0;
+    }
+
+    function onSauceClick() {
+      scrollRef.current.scrollTop = 267;
+    }
+
+    function onMainClick() {
+      scrollRef.current.scrollTop = 790;
+    }
+
+    React.useEffect(() => {
+      scrollRef.current.addEventListener("scroll", onScroll);
+      return () => scrollRef.current.removeEventListener("scroll", onScroll);
+    }, [ingredientList]);
 
     React.useEffect(() => {
         console.log(ingredientList)
@@ -47,18 +75,18 @@ function BurgerIngredients() {
                 Соберите бургер
               </p>
               <div className={styles.tab + " pt-5 pb-10 "}>
-                    <Tab value="bun" active={current === 'bun'} onClick={setCurrent}>
+                    <Tab value="bun" active={current === 'bun'} onClick={onBunClick}>
                     Булки
                     </Tab>
-                    <Tab value="sauce" active={current === 'sauce'} onClick={setCurrent}>
+                    <Tab value="sauce" active={current === 'sauce'} onClick={onSauceClick}>
                     Соусы
                     </Tab>
-                    <Tab value="main" active={current === 'main'} onClick={setCurrent}>
+                    <Tab value="main" active={current === 'main'} onClick={onMainClick}>
                     Начинки
                     </Tab>
               </div>
               {ingredientList.success &&
-                <div className={styles.sectionContainer}>
+                <div className={styles.sectionContainer} ref={scrollRef}>
                 <IngredientsList text="Булки" ingredients={ ingredientList.ingredients.filter((item) => item.type === 'bun') } />
                 <IngredientsList text="Соусы" ingredients={ ingredientList.ingredients.filter((item) => item.type === 'sauce') } />
                 <IngredientsList text="Начинки" ingredients={ ingredientList.ingredients.filter((item) => item.type === 'main') } />
