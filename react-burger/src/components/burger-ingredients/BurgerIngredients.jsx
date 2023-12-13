@@ -3,26 +3,46 @@ import styles from './BurgerIngredients.module.css'
 import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import {IngredientsList} from './ingredients-list/IngredientsList'
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from 'react-redux';
+import getIngredients from '../../services/actions/GetIngredientsApi';
+import IngredientDetails from '../ingredient-details/IngredientDetails';
+import Modal from '../Modal/Modal';
+import { deleteIngredientDetails } from '../../services/actions/IngredientDetails';
 
 BurgerIngredients.propTypes = {
-    ingredients: PropTypes.array.isRequired,
-    onModalOpen: PropTypes.func.isRequired
 }
 
-
-function BurgerIngredients({ingredients, onModalOpen}) {
+function BurgerIngredients() {
 
     const [current, setCurrent] = React.useState('bun')
-    const bunArray = ingredients.filter((item) => item.type === 'bun');
-    const mainArray = ingredients.filter((item) => item.type === 'main');
-    const sauceArray = ingredients.filter((item) => item.type === 'sauce');
+    
+    const dispatch = useDispatch();
+    React.useEffect(() => {
+      dispatch(getIngredients());
+    }, [])
+
+    const ingredientList = useSelector(
+      (store) => store.ingredientList
+    )
+
+    const ingredientDetails = useSelector((store) => store.ingredientDetails)
 
     React.useEffect(() => {
-        console.log(bunArray)
-    }, [ingredients]) 
+        console.log(ingredientList)
+    }, [ingredientList]) 
+
+    function onModalClose() {
+      dispatch(deleteIngredientDetails());
+    }
 
     return (
-        <div className={styles.mainContainer + " pt-10"}>
+      <>
+        {ingredientDetails.isModalOpen && 
+          <Modal onClose={onModalClose}>
+          <IngredientDetails ingredient={ingredientDetails.ingredient}/>
+        </Modal>
+        }
+              <div className={styles.mainContainer + " pt-10"}>
               <p className="text text_type_main-large">
                 Соберите бургер
               </p>
@@ -37,13 +57,18 @@ function BurgerIngredients({ingredients, onModalOpen}) {
                     Начинки
                     </Tab>
               </div>
-              <div className={styles.sectionContainer}>
-                <IngredientsList text="Булки" ingredients={bunArray} onModalOpen={onModalOpen}/>
-                <IngredientsList text="Соусы" ingredients={sauceArray} onModalOpen={onModalOpen} />
-                <IngredientsList text="Начинки"ingredients={mainArray} onModalOpen={onModalOpen} />
+              {ingredientList.success &&
+                <div className={styles.sectionContainer}>
+                <IngredientsList text="Булки" ingredients={ ingredientList.ingredients.filter((item) => item.type === 'bun') } />
+                <IngredientsList text="Соусы" ingredients={ ingredientList.ingredients.filter((item) => item.type === 'sauce') } />
+                <IngredientsList text="Начинки" ingredients={ ingredientList.ingredients.filter((item) => item.type === 'main') } />
               </div>
+              }
+              
 
         </div>
+      </>
+
     )
 }
 

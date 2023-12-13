@@ -3,17 +3,19 @@ import cardStyles from './IngredientCard.module.css'
 import { CurrencyIcon } from '@ya.praktikum/react-developer-burger-ui-components'
 import IngredientDetails from '../../../ingredient-details/IngredientDetails'
 import PropTypes from "prop-types";
+import { useDispatch } from 'react-redux';
+import { addIngredientDetails } from '../../../../services/actions/IngredientDetails';
 
 IngredientCard.propTypes = {
     ingredient: PropTypes.object.isRequired,
-    onModalOpen: PropTypes.func.isRequired
 }
 
-export function IngredientCard({ ingredient, onModalOpen }) {
+export function IngredientCard({ ingredient}) {
+
+    const dispatch = useDispatch();
 
     function onIngredientOpen() {
-        const node = <IngredientDetails ingredient={ingredient} />
-        onModalOpen(node)
+        dispatch(addIngredientDetails(ingredient));
     }
 
     return (

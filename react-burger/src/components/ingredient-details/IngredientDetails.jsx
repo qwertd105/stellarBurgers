@@ -1,11 +1,15 @@
 import style from "./IngredientDetails.module.css"
 import PropTypes from "prop-types";
+import { useSelector } from "react-redux";
 
 IngredientDetails.propTypes = {
     ingredient: PropTypes.object.isRequired
 }
 
-function IngredientDetails({ ingredient }) {
+function IngredientDetails() {
+
+    const { ingredient } = useSelector((store) => store.ingredientDetails);
+
     return (
         <>
         <div className={style.head + " pt-10"}>
