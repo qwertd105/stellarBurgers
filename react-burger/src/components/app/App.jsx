@@ -9,6 +9,8 @@ import BurgerIngredients from '../burger-ingredients/BurgerIngredients'
 import BurgerConstructor from '../burger-constructor/BurgerConstructor';
 import Modal from '../Modal/Modal';
 import { IngredientsURL } from '../../utils/constants';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 
 
@@ -54,18 +56,15 @@ function App() {
     <>
       {error == null ? 
       (<div className={appStyles.app}>
-      {isModalOpen && isLoaded &&
-        <Modal onClose={onModalClose}>
-          {modalChild}
-        </Modal>
-      }
       <AppHeader />
       <main className={appStyles.mainPage}>
+        <DndProvider backend={HTML5Backend}>
         {isLoaded && 
         <>
-          <BurgerIngredients ingredients={ingredients} onModalOpen={onModalOpen} />
-          <BurgerConstructor ingredients={ingredients} onModalOpen={onModalOpen} />
+          <BurgerIngredients />
+          <BurgerConstructor onModalOpen={onModalOpen} />
         </>}
+        </DndProvider>
       </main>
     </div>)
      : <p>Ошибка: {error}</p>}

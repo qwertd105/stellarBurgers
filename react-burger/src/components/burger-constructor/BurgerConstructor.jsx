@@ -1,66 +1,117 @@
 import { Button, ConstructorElement, CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components"
-import React from "react";
+import React, { useRef } from "react";
 import OrderDetails from "../order-details/OrderDetails";
 import styles from "./BurgerConstructor.module.css"
 import MiddleIngredient from "./middle-ingredient/MiddleIngredient"
 import OrderButton from "./order-button/OrderButton";
 import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { useDrop } from "react-dnd";
+import { AddIngredient, DeleteIngredient } from "../../services/actions/IngredientsConstructor";
+import { BUN } from "../../utils/constants";
+import { openOrderModal, closeOrderModal, makeOrder } from "../../services/actions/order";
+import Modal from "../Modal/Modal";
 
 BurgerConstructor.propTypes = {
-    ingredients: PropTypes.array.isRequired,
     onModalOpen: PropTypes.func.isRequired
 }
-function BurgerConstructor({ ingredients, onModalOpen }) {
+function BurgerConstructor({ onModalOpen }) {
 
-    const bun = ingredients[0];
-    const [price, setPrice] = React.useState(bun.price * 2);
+    const dispatch = useDispatch()
+    const ingredientsConstructor = useSelector( (store) => store.ingredientsConstructor )
+    const order = useSelector((store) => store.order)
 
-    React.useEffect(() => {
-        ingredients.forEach((ingredient) => {
-            if (ingredient.type !== "bun") {
-                setPrice(price + ingredient.price);
-            }
+    const ref = useRef(null)
+    const data = {
+        ingredients: ingredientsConstructor.ingredients.map((item) => item.ingredient._id)
+    }
+
+    const [{ isHoverr }, dropRef] = useDrop({
+        accept: "constructor",
+        collect: (monitor) => ({
+          isHoverr : monitor.isOver()
         })
-    }, [ingredients])
+      })
+
+    const [{ isHover }, drop] = useDrop({
+        accept: "ingredient",
+        collect: (monitor) => ({
+          isHover: monitor.isOver(),
+        }),
+        drop({ ingredient }) {
+          if ( ingredient.type === "bun" ) {
+            if (ingredientsConstructor.bun != null) {
+                    dispatch(
+                        DeleteIngredient(
+                          ingredientsConstructor.bun,
+                          ingredientsConstructor.bun._id
+                        )
+                      );
+                }
+            dispatch(AddIngredient(ingredient));
+          } else {
+            if (ingredientsConstructor.bun != null) {
+                dispatch(AddIngredient(ingredient));
+            }
+          }
+        },
+      });
+
+    const bun = ingredientsConstructor.ingredients.filter((it) => it.ingredient.type === BUN);
+    const [price, setPrice] = React.useState(2);
+
 
     function onOrderClick() {
-        const node = <OrderDetails />
-        onModalOpen(node);
+        dispatch(makeOrder(data))
+        dispatch(openOrderModal())
     }
 
     return (
-        <section className={styles.main + " pt-25"}>
-                <div className="pl-8 pb-4">
-                    <ConstructorElement
-                    type="top"
-                    isLocked={true}
-                    text="Краторная булка N-200i (верх)"
-                    price={bun.price}
-                    thumbnail={bun.image}
-                    />
-                </div>
-            <div className={styles.ingredientsContainer}>
-                {ingredients.map(function(ingredient) {
-                    if (ingredient.type !== "bun") {
-                        return <MiddleIngredient key={ingredient._id} ingredient={ingredient} />
-                        }
-                    }
-                )}
-            </div>
-                <div className="pl-8 pt-4">
-                        <ConstructorElement
-                        type="bottom"
-                        isLocked={true}
-                        text="Краторная булка N-200i (низ)"
-                        price={bun.price}
-                        thumbnail={bun.image}
-                        />
-                </div>
+        <section className={styles.main + " pt-25"} ref={drop(dropRef(ref))}>
+                {ingredientsConstructor.bun != null
+                    &&
+                    <>
+                        <div className="pl-8 pb-4">
+                            <ConstructorElement
+                            type="top"
+                            isLocked={true}
+                            text={ingredientsConstructor.bun.name + " (верх)"}
+                            price={ingredientsConstructor.bun.price}
+                            thumbnail={ingredientsConstructor.bun.image}
+                            />
+                        </div>
+                        <div className={styles.ingredientsContainer}>
+                            {ingredientsConstructor.ingredients.map(function(it) {
+                                if (it.ingredient.type !== "bun") {
+                                    return <MiddleIngredient key={it.id} ingredient={it.ingredient} id={it.id}/>
+                                    }
+                                }
+                            )}
+                        </div>
+                        <div className="pl-8 pt-4">
+                                <ConstructorElement
+                                type="bottom"
+                                isLocked={true}
+                                text={ingredientsConstructor.bun.name + " (низ)"}
+                                price={ingredientsConstructor.bun.price}
+                                thumbnail={ingredientsConstructor.bun.image}
+                                />
+                        </div>
+                    </>
+                
+                }
             <div className={styles.done + " pt-10"}>
-                    <p className="text text_type_digits-medium">{price}</p>
+                    <p className="text text_type_digits-medium">{ingredientsConstructor.price}</p>
                     <CurrencyIcon type="primary" />
                     <OrderButton onClick={onOrderClick} />
             </div>
+
+            {order.open_modal && order.success && 
+                <Modal onClose={() => dispatch(closeOrderModal())}>
+                    <OrderDetails id={order.id} status={order.status} name={order.name}/>
+                 </Modal>
+            }
+
         </section>
     )
 }

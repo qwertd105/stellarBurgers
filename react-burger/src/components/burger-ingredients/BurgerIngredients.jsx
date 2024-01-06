@@ -35,7 +35,6 @@ function BurgerIngredients() {
       } else {
         setCurrent("main")
       }
-      console.log(scrollRef.current.scrollTop)
     } 
 
     function onBunClick() {
