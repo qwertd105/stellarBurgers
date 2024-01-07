@@ -21,7 +21,10 @@ const initialState = {
       case MAKE_ORDER_ERR:
         return {
           ...state,
-          uccess: false,
+          id: 0,
+          status: "",
+          name: "",
+          success: false,
         };
       case ORDER_MODAL_OPEN:
         return {

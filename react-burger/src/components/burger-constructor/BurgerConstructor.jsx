@@ -12,19 +12,16 @@ import { BUN } from "../../utils/constants";
 import { openOrderModal, closeOrderModal, makeOrder } from "../../services/actions/order";
 import Modal from "../Modal/Modal";
 
-BurgerConstructor.propTypes = {
-    onModalOpen: PropTypes.func.isRequired
-}
-function BurgerConstructor({ onModalOpen }) {
+function BurgerConstructor() {
 
     const dispatch = useDispatch()
     const ingredientsConstructor = useSelector( (store) => store.ingredientsConstructor )
     const order = useSelector((store) => store.order)
 
     const ref = useRef(null)
-    const data = {
-        ingredients: ingredientsConstructor.ingredients.map((item) => item.ingredient._id)
-    }
+    const data = ingredientsConstructor.bun != null ? {
+        ingredients: [...ingredientsConstructor.ingredients.map((item) => item.ingredient._id), ingredientsConstructor.bun._id, ingredientsConstructor.bun._id]
+    } : null
 
     const [{ isHoverr }, dropRef] = useDrop({
         accept: "constructor",
@@ -101,9 +98,16 @@ function BurgerConstructor({ onModalOpen }) {
                 
                 }
             <div className={styles.done + " pt-10"}>
-                    <p className="text text_type_digits-medium">{ingredientsConstructor.price}</p>
-                    <CurrencyIcon type="primary" />
-                    <OrderButton onClick={onOrderClick} />
+                    {ingredientsConstructor.bun == null &&
+                        <p className="text text_type_main-large">Выберите булки</p>}
+                    {ingredientsConstructor.bun != null &&
+                        <>
+                        <p className="text text_type_digits-medium">{ingredientsConstructor.price}</p>
+                        <CurrencyIcon type="primary" />
+                        <OrderButton onClick={onOrderClick} />
+                        </>
+                        
+                    }
             </div>
 
             {order.open_modal && order.success && 

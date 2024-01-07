@@ -4,7 +4,6 @@ import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import {IngredientsList} from './ingredients-list/IngredientsList'
 import PropTypes from "prop-types";
 import { useDispatch, useSelector } from 'react-redux';
-import getIngredients from '../../services/actions/GetIngredientsApi';
 import IngredientDetails from '../ingredient-details/IngredientDetails';
 import Modal from '../Modal/Modal';
 import { deleteIngredientDetails } from '../../services/actions/IngredientDetails';
@@ -17,9 +16,6 @@ function BurgerIngredients() {
     const [current, setCurrent] = React.useState('bun')
     
     const dispatch = useDispatch();
-    React.useEffect(() => {
-      dispatch(getIngredients());
-    }, [])
 
     const ingredientList = useSelector(
       (store) => store.ingredientList
@@ -52,11 +48,7 @@ function BurgerIngredients() {
     React.useEffect(() => {
       scrollRef.current.addEventListener("scroll", onScroll);
       return () => scrollRef.current.removeEventListener("scroll", onScroll);
-    }, [ingredientList]);
-
-    React.useEffect(() => {
-        console.log(ingredientList)
-    }, [ingredientList]) 
+    }, []);
 
     function onModalClose() {
       dispatch(deleteIngredientDetails());

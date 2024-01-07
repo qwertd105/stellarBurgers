@@ -1,73 +1,42 @@
-import {FC} from 'react';
 import React from 'react';
 import './App.module.css';
 import appStyles from './App.module.css'
-import { Logo } from '@ya.praktikum/react-developer-burger-ui-components'
-import { Tab } from '@ya.praktikum/react-developer-burger-ui-components'
 import AppHeader from '../app-header/AppHeader';
 import BurgerIngredients from '../burger-ingredients/BurgerIngredients'
 import BurgerConstructor from '../burger-constructor/BurgerConstructor';
-import Modal from '../Modal/Modal';
-import { IngredientsURL } from '../../utils/constants';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import { useDispatch, useSelector } from 'react-redux';
+import getIngredients from '../../services/actions/GetIngredientsApi';
 
 
 
 function App() {
 
-  const [ingredients, setIngredients] = React.useState([])
-  const [isLoaded, setIsLoaded] = React.useState(false)
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [error, setError] = React.useState(null)
-  const [modalChild, setModalChild] = React.useState('');
-
-
-  function onModalOpen(node) {
-    setIsModalOpen(true);
-    setModalChild(node);
-  }
-
-  function onModalClose() {
-    setIsModalOpen(false);
-  }
-
-  function getIngredients() {
-    fetch(IngredientsURL)
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        return Promise.reject(`Ошибка ${res.status}`);
-      })
-      .then((data) => {
-        setIngredients(data.data)
-        setIsLoaded(true)
-        })
-      .catch(setError)
-  };
-
-  React.useEffect(() => {
-    getIngredients();
-  }, [])
+  const ingredientList = useSelector((store) => store.ingredientList)
+  const dispatch = useDispatch();
+    React.useEffect(() => {
+      dispatch(getIngredients());
+    }, [])
 
 
   return (
     <>
-      {error == null ? 
-      (<div className={appStyles.app}>
       <AppHeader />
+      {ingredientList.loading == false ?
+      ( ingredientList.success ?
+        <div className={appStyles.app}>
       <main className={appStyles.mainPage}>
         <DndProvider backend={HTML5Backend}>
-        {isLoaded && 
         <>
           <BurgerIngredients />
-          <BurgerConstructor onModalOpen={onModalOpen} />
-        </>}
+          <BurgerConstructor />
+        </>
         </DndProvider>
       </main>
-    </div>)
-     : <p>Ошибка: {error}</p>}
+    </div>
+    : <p className="text text_type_digits-large pt-30">Ошибка</p>)
+     : <p className="text text_type_digits-large pt-30">Загрузка...</p>}
     
     </>
 
