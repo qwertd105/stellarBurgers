@@ -104,7 +104,7 @@ function BurgerConstructor() {
                         <>
                         <p className="text text_type_digits-medium">{ingredientsConstructor.price}</p>
                         <CurrencyIcon type="primary" />
-                        <OrderButton onClick={onOrderClick} />
+                        <OrderButton onClick={onOrderClick}  text="Оформить заказ"/>
                         </>
                         
                     }
