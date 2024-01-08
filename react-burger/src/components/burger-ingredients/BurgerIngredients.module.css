@@ -1,0 +1,16 @@
+.mainContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.sectionContainer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 40px;
+    max-height: 600px;
+    overflow-y: scroll;
+}
+
+.tab {
+    display: flex;
+}
